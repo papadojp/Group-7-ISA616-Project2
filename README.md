@@ -1,12 +1,18 @@
 # Overview of the Repository
 
-The purpose of this repository is to interact with GitHub to access the files for our second project in ISA 616.  Below, I also include details about GitHub to help you in working in this environment.
+The purpose of this repository is to interact with GitHub to access the files for our second project in ISA 616.  Below, Dr. Farmer also included details about GitHub to help you in working in this environment. This specific fork is for Group 7 (Jake Papadopoulos and Steven Wintringham) to have a place to share files and work and manage version control during the course of the project.
 
 ## Project Overview
 
 Annually, the FSB conducts a senior survey of graduates to learn of their employment status.  In addition, information is verified using LinkedIn and employer survey information.  The data you are provided ('FSB_BI_Survey_2019_2021.rds') contains data on graduates for 2019, 2020, and 2021.  The data are merged from two sources:  the senior survey, and data from the Miami University database.  
 
-The data are anonymized, however it is possible that if you look hard enough, you can identify students.  You are bound, ethically not to do so.  It is a strict ethical code that you will not discuss individual data points with ANYONE except for me and your team.  Failure to comply with this code of ethics will result in a failing grade in the course.  
+The data are anonymized, however it is possible that if you look hard enough, you can identify students.  You are bound, ethically not to do so.  It is a strict ethical code that you will not discuss individual data points with ANYONE except for me and your team.  Failure to comply with this code of ethics will result in a failing grade in the course. 
+
+## Project Goals
+
+We intend to determine if there is correlation between student internships and job placement for students at the Farmer School of Business. Using the data provided by the client (Mr. Kirk Bogard), we will conduct an analysis to determine if there is a relationship. Ideally, we can provide a chart or graph of our findings in order to provide an easy visualization for students, career services staff, and prospective donors to understand the value that internships have upon post-graduate job placement. Thus, the primary goals are to:
+- determine the relationship between internships and post-grad job placement
+- communicate the results of the analysis in an easy to comprehend format that conveys the findings accurately
 
 ## Data Sources
 

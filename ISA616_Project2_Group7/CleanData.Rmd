@@ -4,13 +4,6 @@ author: "Jake Papadopoulos and Steven Wintringham"
 date: "2023-10-03"
 output: html_document
 ---
-
-```{r}
-data = readRDS("FSB_BI_Survey_2019_2021.rds")
-head(data)
-```
-
-
 ## **Description**
 
 Annually, the FSB conducts a senior survey of graduates to learn of their employment status. In addition, information is verified using LinkedIn and employer survey information. The data file contains data on graduates for 2019, 2020, and 2021. The data are merged from two sources: the senior survey, and data from the Miami University database.
@@ -30,5 +23,12 @@ Below is a visual of the business value proposition created for this project.
 ## **Data Pre-Processing**
 
 **Reading the Data**
-
+```{r}
+data = readRDS("FSB_BI_Survey_2019_2021.rds")
+head(data)
+```
 **Data Description**
+```{r}
+str(data)
+```
+

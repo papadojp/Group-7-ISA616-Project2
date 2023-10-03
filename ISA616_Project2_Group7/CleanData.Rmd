@@ -9,22 +9,24 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## R Markdown
+## **Description**
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+Annually, the FSB conducts a senior survey of graduates to learn of their employment status. In addition, information is verified using LinkedIn and employer survey information. The data file contains data on graduates for 2019, 2020, and 2021. The data are merged from two sources: the senior survey, and data from the Miami University database.
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+We intend to determine if there is correlation between student internships and job placement for students at the Farmer School of Business. Using the data provided by the client (Mr. Kirk Bogard), we will conduct an analysis to determine if there is a relationship. Ideally, we can provide a chart or graph of our findings in order to provide an easy visualization for students, career services staff, and prospective donors to understand the value that internships have upon post-graduate job placement. Thus, the primary goals are to:
 
-```{r cars}
-summary(cars)
-```
+-   determine the relationship between internships and post-grad job placement
 
-## Including Plots
+-   communicate the results of the analysis in an easy to comprehend format that conveys the findings accurately
 
-You can also embed plots, for example:
+## **Business Value Proposition**
 
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
+Below is a visual of the business value proposition created for this project.
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+![](images/Project 2 BVP.png)
+
+## **Data Pre-Processing**
+
+**Reading the Data**
+
+**Data Description**

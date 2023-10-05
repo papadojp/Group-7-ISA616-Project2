@@ -28,7 +28,16 @@ data = readRDS("FSB_BI_Survey_2019_2021.rds")
 head(data)
 ```
 **Data Description**
+
 ```{r}
-str(data)
+install.packages("tidyverse")
+library('tidyverse')
 ```
+Data Structure:
+```{r}
+glimpse(data)
+```
+
+**Data Cleaning**
+
 

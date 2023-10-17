@@ -88,3 +88,8 @@ clean_data <- clean_data[complete_rows, ]
 colSums(is.na(clean_data))
 ```
 Now we have dropped all of the rows with null values for `survey_internship` and `survey_offer`.
+
+```{r}
+saveRDS(clean_data, "clean_data.rds")
+```
+

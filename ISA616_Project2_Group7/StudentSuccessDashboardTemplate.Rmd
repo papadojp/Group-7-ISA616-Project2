@@ -15,13 +15,13 @@ pacman::p_load(tidyverse, #for data manipulation
                plotly, #for interactive plots
                flexdashboard, #to make a dashboard
                fontawesome, #for icons
-               DT #for better tables
+               DT, #for better tables
+               dplyr
                )
 
 #read in data
 cd = readRDS("clean_data.rds")
 ```
-
 
 # Project Overview
 
@@ -43,10 +43,10 @@ Overview of survey responses
 
 ## row {data-width="300"}
 
-### Response Rate
+### Usable Response Rate
 
 ```{r, echo = FALSE}
-rate=round(100*nrow(cd)/800,0) ## need better number
+rate=round(100*nrow(cd)/3235,0) ## need better number
 gauge(rate, min=0,max=100,symbol='%',gaugeSectors(success=c(80,100),warning=c(40,79),danger = c(0,39)))
 ```
 
@@ -59,12 +59,9 @@ valueBox(nusable,icon="fa-users")
 # note that I have been unable to get all icons to work
 ```
 
-## row {data-height="600"}
-
 ### Internship Count
 
 ```{r,echo=FALSE}
-
 p=ggplot(cd,aes(survey_internships))+
   geom_bar(color="steelblue",fill="steelblue")+
   xlab("Internship Status")+
@@ -73,10 +70,46 @@ p=ggplot(cd,aes(survey_internships))+
 ggplotly(p)
 ```
 
-### Offer rate by Primary Major
+## row {data-height="600"}
+
+### Internship Rate by Primary Major
 
 ```{r,echo=FALSE}
+internships_by_major <- cd %>%
+  mutate(at_least_one_internship = ifelse(survey_internships > 0, 1, 0))
 
+internship_rate <- internships_by_major %>%
+  group_by(major1) %>%
+  summarize(internship_rate = mean(at_least_one_internship))
+
+p <- ggplot(internship_rate, aes(x = major1, y = internship_rate)) +
+  geom_bar(stat = "identity", fill = "steelblue") +
+  labs(title = "Internship Rate by Major",
+       x = "Major",
+       y = "Internship Rate") +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+ggplotly(p)
+```
+
+### Offer Rate by Primary Major
+
+```{r,echo=FALSE}
+offers_by_major <- cd %>%
+  mutate(at_least_one_offer = ifelse(survey_offers > 0, 1, 0))
+
+offer_rate <- offers_by_major %>%
+  group_by(major1) %>%
+  summarize(offer_rate = mean(at_least_one_offer))
+
+p = ggplot(offer_rate, aes(x = major1, y = offer_rate)) +
+  geom_bar(stat = "identity", fill = "steelblue") +
+  labs(title = "Offer Rate by Major",
+       x = "Major",
+       y = "Offer Rate") +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+ggplotly(p)
 ```
 
 # Analysis Results {data-orientation="columns"}
@@ -102,4 +135,3 @@ ggplotly(p)
 ```{r,echo=FALSE}
 
 ```
-

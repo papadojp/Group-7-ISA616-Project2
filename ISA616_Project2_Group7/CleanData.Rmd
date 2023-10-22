@@ -89,6 +89,16 @@ colSums(is.na(clean_data))
 ```
 Now we have dropped all of the rows with null values for `survey_internship` and `survey_offer`.
 
+`survey_internships` and `survey_offers` both have values that are not numeric that need to be cleaned to allow for easy analysis. Then the variables must be made numeric.
+
+```{r}
+clean_data <- clean_data[clean_data$survey_internships != "N/A" & clean_data$survey_internships != "RPT",]
+clean_data <- clean_data[clean_data$survey_offers != "multiple" & clean_data$survey_offers != "na" & clean_data$survey_offers != "2+",]
+clean_data$survey_internships <- as.numeric(clean_data$survey_internships)
+```
+
+
+
 ```{r}
 saveRDS(clean_data, "clean_data.rds")
 ```

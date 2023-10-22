@@ -16,7 +16,8 @@ pacman::p_load(tidyverse, #for data manipulation
                flexdashboard, #to make a dashboard
                fontawesome, #for icons
                DT, #for better tables
-               dplyr
+               dplyr,
+               gridExtra
                )
 
 #read in data
@@ -25,17 +26,17 @@ cd = readRDS("clean_data.rds")
 
 # Project Overview
 
-## Data Overview
+## **Data Overview**
 
-Annually, the FSB conducts a senior survey of graduates to learn of their employment status. In addition, information is verified using LinkedIn and employer survey information. The data you are provided ('FSB_BI_Survey_2019_2021.rds') contains data on graduates for 2019, 2020, and 2021. The data are merged from two sources: the senior survey, and data from the Miami University database. The data are anonymized, however it is possible that if you look hard enough, you can identify students. You are bound, ethically not to do so. It is a strict ethical code that you will not discuss individual data points with ANYONE except for me and your team. Failure to comply with this code of ethics will result in a failing grade in the course.
+Annually, the FSB conducts a senior survey of graduates to learn of their employment status. In addition, information is verified using LinkedIn and employer survey information. The data you are provided ('FSB_BI_Survey_2019_2021.rds') contains data on graduates for 2019, 2020, and 2021. The data are merged from two sources: the senior survey, and data from the Miami University database. The data had many data points containing lots of information on graduates. However, the data set was then cleaned and prepared for analysis, and in the proccess much of the variables were removed in order to keep only the relevant data points to the question at hand.
 
-## Project Goals
+## **Project Goals**
 
-We intend to determine if there is correlation between student internships and job placement for students at the Farmer School of Business. Using the data provided by the client (Mr. Kirk Bogard), we will conduct an analysis to determine if there is a relationship. Ideally, we can provide a chart or graph of our findings in order to provide an easy visualization for students, career services staff, and prospective donors to understand the value that internships have upon post-graduate job placement. Thus, the primary goals are to determine the relationship between internships and post-grad job placement and communicate the results of the analysis in an easy to comprehend format that conveys the findings accurately
+We intend to determine if there is correlation between student internships and job placement for students at the Farmer School of Business. Using the data provided by the client (Mr. Kirk Bogard), we will conduct a graphical analysis to determine if there is a relationship. Ideally, we can provide a chart or graph of our findings in order to provide an easy visualization for students, career services staff, and prospective donors to understand the value that internships have upon post-graduate job placement. Thus, the primary goals are to determine the relationship between internships and post-grad job placement and communicate the results of the analysis in an easy to comprehend format that conveys the findings accurately.
 
-## Written Insights
+## **Written Insights**
 
-Insert once analysis is completed with written insights and links to otherp ages that support our conclusions.
+Following the graphical analysis seen in the plots provided in the other pages of this dashboard, it can be seen that internships do have some sort of connection with job placement. For one, it is worth noting that the vast majority of students (1966 out of 2182 students) had at least one internship during their college career. Out of those 1966, 1649 of them received at least one job offer. On the other hand, for those few students who did not have internships, 107 of them received a job offer, while 109 didn't. This tells a few things of importance about FSB students. The overwhelming majority of them have some sort of internship during their undergraduate studies, and the likelihood those students also received a job offer is significantly higher than in those students who don't. Within our dashboard, the relationship between internships and job offers, and these variables individually, are explored in a few ways, including drilling down into the data to see how it affects different majors. In all majors, similar trends are observed.
 
 # Survey Overview {data-orientation="columns"}
 
@@ -116,15 +117,40 @@ ggplotly(p)
 
 ## Column {data-width="400"}
 
-### Internship Status by Major
+### Job Offer Counts vs Internship Status
 
 ```{r,echo=FALSE}
 
+cd$internship_status <- ifelse(cd$survey_internships > 0, "Had Internship", "Zero Internships")
+cd$job_offer_status <- ifelse(cd$survey_offers > 0, "Received Offer", "Zero Offers")
+
+# Create the bar chart
+bar_chart <- ggplot(cd, aes(x = internship_status, fill = job_offer_status)) +
+  geom_bar(position = "dodge") +
+  labs(title = "Job Offers vs. Internships",
+       x = "Internship Status",
+       y = "Number of Students") +
+  scale_fill_manual(values = c("Received Offer" = "steelblue", "Zero Offers" = "red"))
+
+ggplotly(bar_chart)
 ```
 
 ### Job Offer Counts
 
 ```{r,echo=FALSE}
+# Create a bar plot showing the total number of people who received each amount of job offers in ascending order
+job_offers_plot <- cd %>%
+  filter(survey_offers > 0) %>%
+  ggplot(aes(x = reorder(as.character(survey_offers), as.numeric(survey_offers)))) +
+  geom_bar(fill = "steelblue", color = "steelblue") +
+  labs(title = "Job Offers Count",
+       x = "Number of Job Offers",
+       y = "Number of Students")
+
+# Convert the ggplot to an interactive plot
+job_offers_plotly <- ggplotly(job_offers_plot)
+
+job_offers_plotly
 
 ```
 
@@ -133,5 +159,17 @@ ggplotly(p)
 ### Number of Internships by Job Offer
 
 ```{r,echo=FALSE}
+cd$offer_status <- ifelse(cd$survey_offers > 0, "Received Offer", "No Offer")
 
+# Create the clustered bar plot with facet_wrap
+p <- ggplot(cd, aes(x = factor(survey_internships), fill = offer_status)) +
+  geom_bar(position = "dodge") +
+  labs(title = "Job Offers vs. Internships by Major",
+       x = "Number of Internships",
+       y = "Number of Students") +
+  facet_wrap(~ major1, ncol = 2) +
+  scale_fill_manual(values = c("Received Offer" = "steelblue", "No Offer" = "red"))
+
+# Convert the ggplot to an interactive plot
+ggplotly(p)
 ```

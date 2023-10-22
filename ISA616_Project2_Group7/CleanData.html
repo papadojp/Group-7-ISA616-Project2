@@ -360,19 +360,16 @@ display: none;
 <div id="session-info" class="section level2">
 <h2><strong>Session Info</strong></h2>
 <pre class="r"><code>sessionInfo()</code></pre>
-<pre><code>## R version 4.3.1 (2023-06-16 ucrt)
-## Platform: x86_64-w64-mingw32/x64 (64-bit)
-## Running under: Windows 11 x64 (build 22621)
+<pre><code>## R version 4.3.1 (2023-06-16)
+## Platform: aarch64-apple-darwin20 (64-bit)
+## Running under: macOS Monterey 12.5.1
 ## 
 ## Matrix products: default
-## 
+## BLAS:   /Library/Frameworks/R.framework/Versions/4.3-arm64/Resources/lib/libRblas.0.dylib 
+## LAPACK: /Library/Frameworks/R.framework/Versions/4.3-arm64/Resources/lib/libRlapack.dylib;  LAPACK version 3.11.0
 ## 
 ## locale:
-## [1] LC_COLLATE=English_United States.utf8 
-## [2] LC_CTYPE=English_United States.utf8   
-## [3] LC_MONETARY=English_United States.utf8
-## [4] LC_NUMERIC=C                          
-## [5] LC_TIME=English_United States.utf8    
+## [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
 ## 
 ## time zone: America/New_York
 ## tzcode source: internal
@@ -508,7 +505,7 @@ head(data)</code></pre>
 <p><strong>Data Description</strong></p>
 <pre class="r"><code>library(&#39;tidyverse&#39;)</code></pre>
 <pre><code>## ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
-## ✔ dplyr     1.1.2     ✔ readr     2.1.4
+## ✔ dplyr     1.1.3     ✔ readr     2.1.4
 ## ✔ forcats   1.0.0     ✔ stringr   1.5.0
 ## ✔ ggplot2   3.4.3     ✔ tibble    3.2.1
 ## ✔ lubridate 1.9.2     ✔ tidyr     1.3.0
@@ -628,6 +625,12 @@ colSums(is.na(clean_data))</code></pre>
 ##                627</code></pre>
 <p>Now we have dropped all of the rows with null values for
 <code>survey_internship</code> and <code>survey_offer</code>.</p>
+<p><code>survey_internships</code> and <code>survey_offers</code> both
+have values that are not numeric that need to be cleaned to allow for
+easy analysis. Then the variables must be made numeric.</p>
+<pre class="r"><code>clean_data &lt;- clean_data[clean_data$survey_internships != &quot;N/A&quot; &amp; clean_data$survey_internships != &quot;RPT&quot;,]
+clean_data &lt;- clean_data[clean_data$survey_offers != &quot;multiple&quot; &amp; clean_data$survey_offers != &quot;na&quot; &amp; clean_data$survey_offers != &quot;2+&quot;,]
+clean_data$survey_internships &lt;- as.numeric(clean_data$survey_internships)</code></pre>
 <pre class="r"><code>saveRDS(clean_data, &quot;clean_data.rds&quot;)</code></pre>
 </div>
 

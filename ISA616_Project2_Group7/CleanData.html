@@ -360,16 +360,19 @@ display: none;
 <div id="session-info" class="section level2">
 <h2><strong>Session Info</strong></h2>
 <pre class="r"><code>sessionInfo()</code></pre>
-<pre><code>## R version 4.3.1 (2023-06-16)
-## Platform: aarch64-apple-darwin20 (64-bit)
-## Running under: macOS Monterey 12.5.1
+<pre><code>## R version 4.3.1 (2023-06-16 ucrt)
+## Platform: x86_64-w64-mingw32/x64 (64-bit)
+## Running under: Windows 11 x64 (build 22621)
 ## 
 ## Matrix products: default
-## BLAS:   /Library/Frameworks/R.framework/Versions/4.3-arm64/Resources/lib/libRblas.0.dylib 
-## LAPACK: /Library/Frameworks/R.framework/Versions/4.3-arm64/Resources/lib/libRlapack.dylib;  LAPACK version 3.11.0
+## 
 ## 
 ## locale:
-## [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+## [1] LC_COLLATE=English_United States.utf8 
+## [2] LC_CTYPE=English_United States.utf8   
+## [3] LC_MONETARY=English_United States.utf8
+## [4] LC_NUMERIC=C                          
+## [5] LC_TIME=English_United States.utf8    
 ## 
 ## time zone: America/New_York
 ## tzcode source: internal
@@ -505,7 +508,7 @@ head(data)</code></pre>
 <p><strong>Data Description</strong></p>
 <pre class="r"><code>library(&#39;tidyverse&#39;)</code></pre>
 <pre><code>## ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
-## ✔ dplyr     1.1.3     ✔ readr     2.1.4
+## ✔ dplyr     1.1.2     ✔ readr     2.1.4
 ## ✔ forcats   1.0.0     ✔ stringr   1.5.0
 ## ✔ ggplot2   3.4.3     ✔ tibble    3.2.1
 ## ✔ lubridate 1.9.2     ✔ tidyr     1.3.0
@@ -579,8 +582,8 @@ number of majors * <code>major1</code> : the first major *
 range the respondent falls in * <code>survey_plans</code> : respondent’s
 plans after graduation * <code>survey_salary</code> : respondent’s
 salary</p>
-<p>The following code extracts the relavant variables from the oringal
-dataset and palces it in a new dataframe called
+<p>The following code extracts the relevant variables from the original
+dataset and places it in a new dataframe called
 <code>clean_data</code>.</p>
 <pre class="r"><code>clean_data = data[c(&#39;survey_internships&#39;,&#39;survey_offers&#39;,&#39;nmajor&#39;,&#39;major1&#39;,&#39;major2&#39;,&#39;Gender&#39;,&#39;GPA.Range&#39;,&#39;survey_plans&#39;,&#39;survey_salary&#39;)]</code></pre>
 <p>Checking for null values:</p>
@@ -592,7 +595,7 @@ dataset and palces it in a new dataframe called
 ##      survey_salary 
 ##               1503</code></pre>
 <p>It makes sense that there is null values for offers, internships, and
-salary, as not everyone will have had an internship or have recieved and
+salary, as not everyone will have had an internship or have received and
 offer (thus not having a salary either). However, the null values in
 <code>survey_plans</code> are somewhat problematic, as the plans
 variable could help explain why one may not have an offer/salary, if
@@ -611,7 +614,7 @@ colSums(is.na(clean_data))</code></pre>
 “No Response”.</p>
 <p>Next, given that we are focused on the internships relationship with
 receiving offers, it is necessary to drop rows where the
-<code>survey_offers</code> or <code>survey_internships</code> row is
+<code>survey_offers</code> or <code>survey_internships</code> field is
 blank, as these observation do not possess the most relevant information
 needed for the analysis.</p>
 <pre class="r"><code>complete_rows &lt;- complete.cases(clean_data$survey_offers, clean_data$survey_internships)

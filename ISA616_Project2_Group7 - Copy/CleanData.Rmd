@@ -1,0 +1,105 @@
+---
+title: "Clean Data -- Project 2"
+author: "Jake Papadopoulos and Steven Wintringham"
+date: "2023-10-03"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+## **Session Info**
+```{r}
+sessionInfo()
+```
+
+## **Description**
+
+Annually, the FSB conducts a senior survey of graduates to learn of their employment status. In addition, information is verified using LinkedIn and employer survey information. The data file contains data on graduates for 2019, 2020, and 2021. The data are merged from two sources: the senior survey, and data from the Miami University database.
+
+We intend to determine if there is correlation between student internships and job placement for students at the Farmer School of Business. Using the data provided by the client (Mr. Kirk Bogard), we will conduct an analysis to determine if there is a relationship. Ideally, we can provide a chart or graph of our findings in order to provide an easy visualization for students, career services staff, and prospective donors to understand the value that internships have upon post-graduate job placement. Thus, the primary goals are to:
+
+-   determine the relationship between internships and post-grad job placement
+
+-   communicate the results of the analysis in an easy to comprehend format that conveys the findings accurately
+
+## **Business Value Proposition**
+
+Below is a visual of the business value proposition created for this project.
+
+![](images/Project 2 BVP.png)
+
+## **Data Pre-Processing**
+
+**Reading the Data**
+```{r}
+data = readRDS("FSB_BI_Survey_2019_2021.rds")
+head(data)
+```
+**Data Description**
+
+```{r}
+library('tidyverse')
+```
+Data Structure:
+
+```{r}
+str(data)
+```
+The student data file contains 3235 observations of 42 variables, but several of them are dummies. The general categories within the data are admission details, honors and awards, demographic information, and employment survey results. Some of the categorical variables, especially company, have many levels, and because of the nature of the survey, the format of the responses are not always consistent. Cleaning these columns would take more time than we have for this project, but they are not relevant to our question.
+
+**Data Cleaning**
+
+To answer our question, we do not need all of the variables that are available in this dataset. The variables we need to retain are:
+* `survey_internships` : the number of internships a respondent had.
+* `survey_offers` : the number of offers a respondent recieved. (i.e. the response variable)
+* `nmajor` : the number of majors
+* `major1` : the first major
+* `major2` : the second major (if applicable)
+* `Gender` : respondent's gender
+* `GPA.Range` : GPA range the respondent falls in
+* `survey_plans` : respondent's plans after graduation
+* `survey_salary` : respondent's salary
+
+The following code extracts the relavant variables from the oringal dataset and palces it in a new dataframe called `clean_data`.
+```{r}
+clean_data = data[c('survey_internships','survey_offers','nmajor','major1','major2','Gender','GPA.Range','survey_plans','survey_salary')]
+```
+
+Checking for null values:
+```{r}
+colSums(is.na(clean_data))
+```
+It makes sense that there is null values for offers, internships, and salary, as not everyone will have had an internship or have recieved and offer (thus not having a salary either). However, the null values in `survey_plans` are somewhat problematic, as the plans variable could help explain why one may not have an offer/salary, if they are pursing something like grad school.
+
+Thus, we will create another level within survey_plans to account for N/A values, called "No Response".
+
+```{r}
+clean_data$survey_plans <- ifelse(is.na(clean_data$survey_plans), "No Response", clean_data$survey_plans)
+colSums(is.na(clean_data))
+```
+Survey plans now has no missing values, as they have been filled with "No Response".
+
+Next, given that we are focused on the internships relationship with receiving offers, it is necessary to drop rows where the `survey_offers` or `survey_internships` row is blank, as these observation do not possess the most relevant information needed for the analysis.
+
+```{r}
+complete_rows <- complete.cases(clean_data$survey_offers, clean_data$survey_internships)
+clean_data <- clean_data[complete_rows, ]
+colSums(is.na(clean_data))
+```
+Now we have dropped all of the rows with null values for `survey_internship` and `survey_offer`.
+
+`survey_internships` and `survey_offers` both have values that are not numeric that need to be cleaned to allow for easy analysis. Then the variables must be made numeric.
+
+```{r}
+clean_data <- clean_data[clean_data$survey_internships != "N/A" & clean_data$survey_internships != "RPT",]
+clean_data <- clean_data[clean_data$survey_offers != "multiple" & clean_data$survey_offers != "na" & clean_data$survey_offers != "2+",]
+clean_data$survey_internships <- as.numeric(clean_data$survey_internships)
+```
+
+
+
+```{r}
+saveRDS(clean_data, "clean_data.rds")
+```
+

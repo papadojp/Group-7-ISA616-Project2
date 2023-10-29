@@ -61,7 +61,7 @@ To answer our question, we do not need all of the variables that are available i
 * `survey_plans` : respondent's plans after graduation
 * `survey_salary` : respondent's salary
 
-The following code extracts the relavant variables from the oringal dataset and palces it in a new dataframe called `clean_data`.
+The following code extracts the relevant variables from the original dataset and places it in a new dataframe called `clean_data`.
 ```{r}
 clean_data = data[c('survey_internships','survey_offers','nmajor','major1','major2','Gender','GPA.Range','survey_plans','survey_salary')]
 ```
@@ -70,7 +70,7 @@ Checking for null values:
 ```{r}
 colSums(is.na(clean_data))
 ```
-It makes sense that there is null values for offers, internships, and salary, as not everyone will have had an internship or have recieved and offer (thus not having a salary either). However, the null values in `survey_plans` are somewhat problematic, as the plans variable could help explain why one may not have an offer/salary, if they are pursing something like grad school.
+It makes sense that there is null values for offers, internships, and salary, as not everyone will have had an internship or have received and offer (thus not having a salary either). However, the null values in `survey_plans` are somewhat problematic, as the plans variable could help explain why one may not have an offer/salary, if they are pursing something like grad school.
 
 Thus, we will create another level within survey_plans to account for N/A values, called "No Response".
 
@@ -80,7 +80,7 @@ colSums(is.na(clean_data))
 ```
 Survey plans now has no missing values, as they have been filled with "No Response".
 
-Next, given that we are focused on the internships relationship with receiving offers, it is necessary to drop rows where the `survey_offers` or `survey_internships` row is blank, as these observation do not possess the most relevant information needed for the analysis.
+Next, given that we are focused on the internships relationship with receiving offers, it is necessary to drop rows where the `survey_offers` or `survey_internships` field is blank, as these observation do not possess the most relevant information needed for the analysis.
 
 ```{r}
 complete_rows <- complete.cases(clean_data$survey_offers, clean_data$survey_internships)

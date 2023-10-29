@@ -2,7 +2,7 @@
 title: "Student Success Dashboard Template"
 output: 
   flexdashboard::flex_dashboard:
-    orientation: columns
+    orientation: rows
 #runtime: shiny
 ---
 
@@ -27,6 +27,11 @@ cd = readRDS("clean_data.rds")
 ```
 
 # Project Overview
+
+## row {data-height="300"}
+
+### **Project Statement**
+Through this analysis, we found that Miami students who have had internships have higher job placement rates than those who have not had internships.
 
 
 ### **Data Overview**

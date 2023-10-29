@@ -1,0 +1,212 @@
+---
+title: "Student Success Dashboard Template"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: rows
+#runtime: shiny
+---
+
+```{r setup, include=FALSE,echo=FALSE}
+# Set up the document and configure code chunk options
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+
+# Load required R packages using 'pacman'
+if(require(pacman) == FALSE) install.packages("pacman")
+pacman::p_load(
+  tidyverse,      # Data manipulation and visualization
+  plotly,         # Interactive plots
+  flexdashboard,  # Dashboard creation
+  fontawesome,    # For icons
+  DT,             # Enhanced tables
+  dplyr,
+  gridExtra
+)
+
+# Read in the data from "clean_data.rds"
+cd = readRDS("clean_data.rds")
+```
+
+# Project Overview
+
+## row {data-height="300"}
+
+### **Project Statement**
+Through this analysis, we found that Miami students who have had internships have higher job placement rates than those who have not had internships.
+
+
+### **Data Overview**
+
+- Annually, the FSB conducts a senior survey of graduates to learn about their employment status.
+- Information is verified using LinkedIn and employer survey data.
+- The provided data ('FSB_BI_Survey_2019_2021.rds') includes graduates' information from 2019, 2020, and 2021.
+- The data is merged from two sources: the senior survey and the Miami University database.
+- The dataset underwent extensive cleaning and preparation to focus on relevant data points.
+
+### **Project Goals**
+
+- Determine the correlation between student internships and job placement at the Farmer School of Business.
+- Utilize data from Mr. Kirk Bogard to conduct graphical analysis for insights.
+- Create visualizations to help students, career services staff, and prospective donors understand the impact of internships on post-graduate job placement.
+- Primary goals:
+  - Analyze the relationship between internships and post-grad job placement.
+  - Communicate the results in an easily understandable format to convey the findings accurately.
+
+### **Insights**
+
+- **Internship Connection with Job Placement:**
+  - The majority of students (1966 out of 2182 students) had at least one internship during their college career.
+  - Of those 1966 students, 1649 received at least one job offer.
+  - Even among the students without internships, 107 of them received a job offer, while 109 didn't.
+- **Key Findings:**
+  - Most FSB students have internships during their undergraduate studies.
+  - Students with internships have a significantly higher likelihood of receiving job offers.
+- **Data Exploration:**
+  - This dashboard explores the relationship between internships and job offers.
+  - Additionally, it delves into how these variables affect different majors.
+  - Similar trends are observed across all majors.
+
+
+# Survey Overview {data-orientation="columns"}
+
+Overview of survey responses
+
+## row {data-width="300"}
+
+### Usable Response Rate
+
+```{r, echo = FALSE}
+rate=round(100*nrow(cd)/3235,0) #used records vs records in original data
+gauge(rate, min=0,max=100,symbol='%',gaugeSectors(success=c(80,100),warning=c(40,79),danger = c(0,39)))
+```
+
+### Usable Responses
+
+```{r,echo=FALSE}
+nusable=nrow(cd) #used records represented numerically
+valueBox(nusable,icon="fa-users")
+```
+
+### Internship Count
+
+```{r,echo=FALSE}
+#number of students with each number of internships
+p=ggplot(cd,aes(survey_internships))+
+  geom_bar(color="steelblue",fill="steelblue")+
+  xlab("Number of Internships")+
+  ylab("Number of Responses")+
+  theme_bw()
+ggplotly(p)
+```
+
+## row {data-height="600"}
+
+### Internship Rate by Primary Major
+
+```{r,echo=FALSE}
+#% of each major with at least one internship
+internships_by_major <- cd %>%
+  mutate(at_least_one_internship = ifelse(survey_internships > 0, 1, 0))
+
+internship_rate <- internships_by_major %>%
+  group_by(major1) %>%
+  summarize(internship_rate = mean(at_least_one_internship))
+
+p <- ggplot(internship_rate, aes(x = major1, y = internship_rate)) +
+  geom_bar(stat = "identity", fill = "steelblue") +
+  labs(title = "Internship Rate by Major",
+       x = "Major",
+       y = "Internship Rate") +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+ggplotly(p)
+```
+
+### Offer Rate by Primary Major
+
+```{r,echo=FALSE}
+#% of each major with at least one job offer
+offers_by_major <- cd %>%
+  mutate(at_least_one_offer = ifelse(survey_offers > 0, 1, 0))
+
+offer_rate <- offers_by_major %>%
+  group_by(major1) %>%
+  summarize(offer_rate = mean(at_least_one_offer))
+
+p = ggplot(offer_rate, aes(x = major1, y = offer_rate)) +
+  geom_bar(stat = "identity", fill = "steelblue") +
+  labs(title = "Offer Rate by Major",
+       x = "Major",
+       y = "Offer Rate") +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+ggplotly(p)
+```
+
+# Analysis Results {data-orientation="columns"}
+
+## Column {data-width="400"}
+
+### Job Offer Counts vs Internship Status
+
+```{r,echo=FALSE}
+#job offer rate for students with internships vs those without (most important graph)
+cd$internship_status <- ifelse(cd$survey_internships > 0, "Had Internship", "Zero Internships")
+cd$job_offer_status <- ifelse(cd$survey_offers > 0, "Received Offer", "Zero Offers")
+# Reorder the levels of the "job_offer_status" factor
+cd$job_offer_status <- factor(cd$job_offer_status, levels = c("Zero Offers", "Received Offer"))
+
+# Create the bar chart
+bar_chart <- ggplot(cd, aes(x = internship_status, fill = job_offer_status)) +
+  geom_bar(position = "dodge") +
+  labs(title = "Job Offers vs. Internships",
+       x = "Internship Status",
+       y = "Number of Students") +
+  scale_fill_manual(values = c("Received Offer" = "steelblue", "Zero Offers" = "red"))
+
+ggplotly(bar_chart)
+```
+
+### Job Offer Counts
+
+```{r,echo=FALSE}
+#number of students receiving each number of job offers
+job_offers_plot <- cd %>%
+  ggplot(aes(x = reorder(as.character(survey_offers), as.numeric(survey_offers)))) +
+  geom_bar(fill = "steelblue", color = "steelblue") +
+  labs(title = "Job Offers Count",
+       x = "Number of Job Offers",
+       y = "Number of Students")
+
+# Convert the ggplot to an interactive plot
+job_offers_plotly <- ggplotly(job_offers_plot)
+
+job_offers_plotly
+
+```
+
+## Column {data-width="600"}
+
+### Job Offers vs Internships by Major
+
+```{r,echo=FALSE}
+#job offer status by number of internships and major
+cd$offer_status <- ifelse(cd$survey_offers > 0, "Received Offer", "No Offer")
+
+# Create the clustered bar plot with facet_wrap
+p <- ggplot(cd, aes(x = factor(survey_internships), fill = offer_status)) +
+  geom_bar(position = "dodge") +
+  labs(title = "Job Offers vs. Internships by Major",
+       x = "Number of Internships",
+       y = "Number of Students") +
+  facet_wrap(~ major1, ncol = 2) +
+  scale_fill_manual(values = c("Received Offer" = "steelblue", "No Offer" = "red"))
+
+# Convert the ggplot to an interactive plot
+ggplotly(p)
+```
+
+# Session Info
+```{r}
+sessionInfo()
+```
+
